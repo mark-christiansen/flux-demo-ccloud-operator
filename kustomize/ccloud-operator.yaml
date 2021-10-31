@@ -1,13 +1,32 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: ccloud-operator
 spec:
-  containers:
-  - name: ccloud-operator
-    image: cnfldemos/ccloud-operator:sha-cca98ee
-    envFrom:
-    - secretRef:
-        name: cc.ccloud-secrets
-  restartPolicy: OnFailure
-  serviceAccountName: ccloud-admin-sa
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: ccloud-operator
+  template:
+    metadata:
+      labels:
+        app: ccloud-operator
+    spec:
+      containers:
+      - name: ccloud-operator
+        image: cnfldemos/ccloud-operator:sha-cca98ee
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: cc.ccloud-secrets
+        resources:
+          limits:  
+            cpu: 2000m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+      serviceAccountName: ccloud-admin-sa
