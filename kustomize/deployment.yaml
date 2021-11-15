@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ccloud-operator
+  name: flux-demo-ccloud-operator
+  namespace: flux-demo
 spec:
   strategy:
     rollingUpdate:
